@@ -1,0 +1,60 @@
+Data Overview
+
+```{r}
+data = read.csv('tempo.csv', sep = ';', na.strings = "", stringsAsFactors = T)
+head(data)
+summary(data)
+```
+Fix Header
+```{r}
+colnames(data) = c('Appearance', 'Temperature', 'Humidity', 'Wind', 'Play')
+head(data)
+```
+Explore categorical data
+```{r}
+# Appearance
+counts = table(data$Appearance)
+barplot(counts, main = "Appearance", xlab = "Appearance")
+# Wind
+counts = table(data$Wind)
+barplot(counts, main = 'Wind', xlab = 'WInd')
+```
+Explore numeric data
+```{r}
+# Temperature
+summary(data$Temperature)
+boxplot(data$Temperature)
+hist(data$Temperature)
+
+# Humidity
+summary(data$Humidity)
+boxplot(data$Humidity)
+hist(data$Humidity)
+```
+Clear Na's
+```{r}
+# Humidity
+data[is.na(data$Humidity),]$Humidity = median(data$Humidity, na.rm = T)
+
+# Wind
+data[is.na(data$Wind),]$Wind = 'FALSO'
+summary(data$Wind)
+```
+Outliers
+```{r}
+# Appearance
+summary(data$Appearance)
+data[!data$Appearance %in% c('chuva', 'nublado', 'sol'),]$Appearance = 'sol'
+data$Appearance = factor(data$Appearance)
+
+# Temperature
+summary(data$Temperature)
+medianTemperature = median(data[!data$Temperature < -130 & !data$Temperature > 130,]$Temperature)
+medianTemperature
+data[data$Temperature < -130 | data$Temperature > 130,]$Temperature = medianTemperature
+
+# Humidity
+summary(data$Humidity)
+data[data$Humidity < 0 | data$Humidity > 100,]$Humidity = median(data[!data$Humidity < 0 & !data$Humidity > 100,]$Humidity)
+```
+
