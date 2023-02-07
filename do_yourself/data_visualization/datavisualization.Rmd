@@ -1,0 +1,51 @@
+# Load File
+```{r}
+dataset = read.csv("dados.csv", sep=";")
+dataset
+summary(dataset)
+```
+# Exploratory Analise
+```{r}
+boxplot(dataset$VALOREMPENHO, outline = F)$stats[5]
+```
+
+
+```{r}
+hist(dataset$PIB, breaks = 10, xlab = "PIB", main = "PIB per capita", ylab = "Frequência", col = "blue", density = 20)
+box()
+```
+```{r}
+densidade = density(dataset$PIB)
+plot(densidade)
+```
+# Combine plots
+```{r}
+hist(dataset$PIB, breaks = 10, xlab = "PIB", main = "PIB per capita", ylab = "Frequência", col = "blue", density = 20)
+par(new=TRUE)
+plot(densidade, col = "red", xlab = "", ylab = "", main = "", zero.line = TRUE)
+```
+
+```{r}
+aggregate(. ~ MUNICIPIO, data=dataset, sum)
+```
+
+# Tables
+```{r}
+#install.packages("stargazer")
+library(stargazer)
+
+stargazer(dataset, summary = F)
+```
+# Lattice
+```{r}
+library(lattice)
+levelplot(PIB ~ VALOREMPENHO * CODIGO, data = dataset)
+```
+# Maiores PIBs
+```{r}
+maiores = head(dataset[order(-dataset$PIB),], 10)
+barplot(maiores$PIB, col = c(1:10), las =2)
+legend("topright", legend=maiores$MUNICIPIO, col= c(1:10), lty=1:2, cex = 0.8, ncol = 2, lwd = 4)
+box()
+```
+
